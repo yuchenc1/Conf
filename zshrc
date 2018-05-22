@@ -135,3 +135,7 @@ bindkey '\e[1;3B' end-of-line
 bindkey '\ev' deer
 
 alias lk='k --no-vcs'
+
+# alias atom='/Applications/Atom.app/Contents/MacOS/Atom'
+alias subl='/Applications/SublimeText.app/Contents/SharedSupport/bin/subl'
+# alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
