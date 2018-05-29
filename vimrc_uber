@@ -1,0 +1,203 @@
+set nocompatible
+" filetype off
+" let &runtimepath.=',~/.vim/bundle/ale'
+filetype plugin on
+
+" Enable line numbers
+set nu
+
+" vim-plug plugins
+call plug#begin('~/.vim/plugged')
+Plug 'tpope/vim-sensible' " default vim values
+Plug 'fatih/vim-go' " go commands
+Plug 'scrooloose/nerdtree' " filetree
+Plug 'scrooloose/nerdcommenter' " comment shortcut
+Plug 'tpope/vim-fugitive' " git commands, notably blame
+" Plug 'scrooloose/syntastic'
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'kien/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
+Plug 'junegunn/fzf.vim'
+Plug 'shougo/neocomplete.vim'
+Plug 'majutsushi/tagbar'
+Plug 'sirver/ultisnips'
+" Plug 'easymotion/vim-easymotion'
+Plug 'solarnz/thrift.vim' " syntax highlighting for thrift files
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'airblade/vim-gitgutter'
+" Plug 'w0rp/ale'
+call plug#end()
+
+" Switch syntax highlighting on, when the terminal has colors
+if &t_Co > 2 || has("gui_running")
+  syntax on
+endif
+
+if exists('+colorcolumn')
+    " set colorcolumn=80,120
+    highlight ColorColumn ctermbg=235 guibg=#2c2d27
+    let &colorcolumn=join(range(81,999),",")
+    let &colorcolumn="80,".join(range(120,999),",")
+endif
+
+" Sudo file if you must
+cmap w!! %!sudo tee > /dev/null %
+
+" Invisible characters *******************************************************
+set listchars=trail:.,tab:>-,eol:$
+set nolist
+:noremap <Leader>i :set list!<CR> " Toggle invisible chars
+
+" Tabs ***********************************************************************
+set softtabstop=4
+set shiftwidth=4
+set tabstop=4
+set expandtab
+set smarttab
+
+" Indents ********************************************************************
+set autoindent
+set smartindent
+set cindent
+set copyindent
+
+set cursorline
+set nowrap
+set ruler             " show the cursor position all the time
+set showcmd           " display incomplete commands
+set showmatch
+
+set foldlevelstart=20 " Don't start folded
+set history=1000      " change # lines of command line history
+set undolevels=1000   " change # lines of undo history
+
+set wildmode=list:longest
+set wildignore=*.swp,*.bak,*.pyc,*.class
+
+set nobackup          " do not keep a backup file, use versions instead
+set noswapfile
+
+if has('mouse')
+  set mouse=a
+endif
+
+set hlsearch
+
+" vim-fugitive
+nmap <Leader>gb :Gblame<CR>
+
+" vim-go
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+let g:go_list_type = "quickfix"
+let g:go_fmt_command = "goimports"
+let g:go_test_timeout = "30s"
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>tf :GoTestFunc<CR>
+au FileType go nmap <leader>c :GoCoverageBrowser<CR>
+au FileType go nmap <leader>cc :GoCoverageToggle<CR>
+au FileType go nmap <Leader>d :GoDescribe<CR>
+au FileType go nmap <Leader>tv <Plug>(go-alternate-vertical)
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+au FileType go nmap <Leader>s <Plug>(go-implements)
+au FileType go nmap <Leader>i <Plug>(go-info)
+au FileType go nmap <Leader>e <Plug>(go-rename)
+au FileType go nmap <Leader>fm <Plug>(go-metalinter)
+au FileType go nmap <Leader>fl :GoLint<CR>
+au FileType go nmap <Leader>fv <Plug>(go-vet)
+au FileType go nmap <Leader>gc :GoCallers<CR>
+au FileType go nmap <Leader>gC :GoCallees<CR>
+au FileType go nmap <Leader>gp :GoChannelPeers<CR>
+au FileType go nmap <Leader>gg :GoGenerate<CR>
+au FileType go nmap <Leader>fs :GoFillStruct<CR>
+nmap <C-j> :cprevious<CR>
+nmap <C-k> :cnext<CR>
+nnoremap <leader>a :cclose<CR>
+
+" nerdtree
+map <C-n> :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+let g:NERDTreeShowGitStatus = 1
+
+" nerd commenter
+let g:NERDSpaceDelims = 1
+let g:NERDTrimTrailingWhitespace = 1
+let NERDLPlace="/*"
+let NERDRPlace="*/"
+map <Leader>\ <plug>NERDCommenterToggle
+map <Leader>[ <plug>NERDCommenterAlignLeft
+map <Leader>] <plug>NERDCommenterUncomment
+
+" ctrlp
+let g:ctrlp_map = '<C-p>'
+" let g:ctrlp_cmd = 'CtrlPMixed'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+
+" " syntastic
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+" let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes':   [],'passive_filetypes': [] }
+" noremap <C-w>e :SyntasticCheck<CR>
+" noremap <C-w>f :SyntasticToggleMode<CR>
+
+" airline
+let g:airline#extensions#whitespace#enabled = 1
+
+" ultisnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" neocomplete
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+" tagbar
+nmap <F8> :TagbarToggle<CR>
+
+" easymotion
+" let g:EasyMotion_do_mapping = 0 " Disable default mappings
+" let g:EasyMotion_smartcase = 1 " case insensitive
+" nmap s <Plug>(easymotion-overwin-f2)
+" nmap w <Plug>(easymotion-overwin-w)
+" map <Leader>l <Plug>(easymotion-lineforward)
+" map <Leader>j <Plug>(easymotion-j)
+" map <Leader>k <Plug>(easymotion-k)
+" map <Leader>h <Plug>(easymotion-linebackward)
+" map . <Plug>(easymotion-sn)
+" omap . <Plug>(easymotion-tn)
+
+" Search mappings: These will make it so that going to the next one in a
+" search will center on the line it's found in.
+map N Nzz
+map n nzz
+
+"Remove all trailing whitespace by pressing F5
+nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+
+" insert UUID after cursor
+command! UUID py import uuid, vim; vim.command(":normal a" + str(uuid.uuid4()))
+nnoremap <Leader>u :UUID<CR>
